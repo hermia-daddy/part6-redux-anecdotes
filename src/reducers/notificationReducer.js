@@ -1,34 +1,50 @@
-const notificationReducer = (state = '', action) => {
+const notificationReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'VOTE_NOTIFICATION':
-      return `you vote '${action.data.anecdote}'`
-    case 'CREATE_NOTIFICATION':
-      return `you create '${action.data.anecdote}'`
+    case 'NEW_NOTIFICATION':
+      if (state) {
+        clearTimeout(state.timeoutID)
+      }
+      return {
+        info: `you vote '${action.data.content}'`,
+        timeoutID: action.data.timeoutID
+      }
     case 'CLEAR_NOTIFICATION':
-      return ''
+      return {}
     default:
       return state
   }
 }
 
-export const createNotification = (anecdote) => {
-  return {
-    type: 'CREATE_NOTIFICATION',
-    data: { anecdote }
+export const setNotification = (content, time) => {
+  return async (dispatch) => {
+    const timeoutID = setTimeout(() => {
+      dispatch({
+        type: 'CLEAR_NOTIFICATION',
+        data: ''
+      })
+    }, time)
+
+    dispatch({
+      type: 'NEW_NOTIFICATION',
+      data: { content, timeoutID }
+    })
+  }
+}
+
+export const createNotification = (content) => {
+  console.log('notification content:', content)
+  return async (dispatch) => {
+    dispatch({
+      type: 'CREATE_NOTIFICATION',
+      data: content
+    })
   }
 }
 
 export const voteNotification = (anecdote) => {
   return {
     type: 'VOTE_NOTIFICATION',
-    data: { anecdote }
-  }
-}
-
-export const clearNotification = () => {
-  return {
-    type: 'CLEAR_NOTIFICATION',
-    data: {}
+    data: anecdote
   }
 }
 
