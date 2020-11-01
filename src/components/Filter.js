@@ -1,17 +1,16 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { filterChange } from '../reducers/filterReducer'
 
-const Filter = () => {
-  const dispatch = useDispatch()
+const Filter = (props) => {
   const handlerChange = (event) => {
     const filter = event.target.value
     console.log('开始:', filter)
     if (filter) {
-      dispatch(filterChange('SET_FILTER', filter))
+      props.filterChange('SET_FILTER', filter)
     } else {
       console.log('触发全部:', filter)
-      dispatch(filterChange('ALL', filter))
+      props.filterChange('ALL', filter)
     }
   }
 
@@ -25,4 +24,8 @@ const Filter = () => {
   )
 }
 
-export default Filter
+const mapDispatchToProps = {
+  filterChange
+}
+
+export default connect(null, mapDispatchToProps)(Filter)
